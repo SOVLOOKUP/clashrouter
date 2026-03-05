@@ -245,7 +245,7 @@
                 :key="plugin.id"
                 :value="plugin.id"
               >
-                {{ plugin.name }} ({{ plugin.id }})
+                {{ plugin.name }}
               </option>
             </select>
             <p class="text-xs text-slate-400 mt-1">
