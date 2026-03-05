@@ -21,8 +21,8 @@ export const useSubscriptionStore = defineStore('subscription', {
       try {
         const data = await subscriptionApi.list()
         this.subscriptions = Array.isArray(data) ? data : []
-      } catch (error: any) {
-        this.error = error.message
+      } catch (error: unknown) {
+        this.error = error instanceof Error ? error.message : '未知错误'
         this.subscriptions = []
         throw error
       } finally {
@@ -35,8 +35,8 @@ export const useSubscriptionStore = defineStore('subscription', {
       this.error = null
       try {
         this.currentSubscription = await subscriptionApi.get(id)
-      } catch (error: any) {
-        this.error = error.message
+      } catch (error: unknown) {
+        this.error = error instanceof Error ? error.message : '未知错误'
         throw error
       } finally {
         this.loading = false
@@ -50,8 +50,8 @@ export const useSubscriptionStore = defineStore('subscription', {
         const subscription = await subscriptionApi.create(data)
         this.subscriptions.push(subscription)
         return subscription
-      } catch (error: any) {
-        this.error = error.message
+      } catch (error: unknown) {
+        this.error = error instanceof Error ? error.message : '未知错误'
         throw error
       } finally {
         this.loading = false
@@ -71,8 +71,8 @@ export const useSubscriptionStore = defineStore('subscription', {
           this.currentSubscription = subscription
         }
         return subscription
-      } catch (error: any) {
-        this.error = error.message
+      } catch (error: unknown) {
+        this.error = error instanceof Error ? error.message : '未知错误'
         throw error
       } finally {
         this.loading = false
@@ -88,8 +88,8 @@ export const useSubscriptionStore = defineStore('subscription', {
         if (this.currentSubscription?.id === id) {
           this.currentSubscription = null
         }
-      } catch (error: any) {
-        this.error = error.message
+      } catch (error: unknown) {
+        this.error = error instanceof Error ? error.message : '未知错误'
         throw error
       } finally {
         this.loading = false
@@ -109,8 +109,8 @@ export const useSubscriptionStore = defineStore('subscription', {
           this.currentSubscription = subscription
         }
         return subscription
-      } catch (error: any) {
-        this.error = error.message
+      } catch (error: unknown) {
+        this.error = error instanceof Error ? error.message : '未知错误'
         throw error
       } finally {
         this.loading = false

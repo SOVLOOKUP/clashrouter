@@ -1,4 +1,4 @@
-import { Elysia } from 'elysia'
+import { Elysia, status } from 'elysia'
 import { convertSubscription, getSubscriptionContent } from '../../services/subscriptionService'
 
 function getSubscriptionErrorStatus(errorMessage?: string): number {
@@ -13,9 +13,10 @@ function getSubscriptionErrorStatus(errorMessage?: string): number {
 }
 
 export const subscriptionServerRoutes = new Elysia({ prefix: '/sub' })
-// 获取订阅内容
-  .get('/:token', async ({ params: { token }, query }: any) => {
+  // 获取订阅内容
+  .get('/:token', async ({ params, query }: { params: { token: string }, query: Record<string, string> }) => {
     try {
+      const { token } = params
       const target = query.target || 'clash'
       const config = query.config || ''
       const airportId = query.airportId || ''
@@ -25,51 +26,21 @@ export const subscriptionServerRoutes = new Elysia({ prefix: '/sub' })
         const result = await getSubscriptionContent(token, target, airportId || undefined)
 
         if (!result.success) {
-          return new Response(result.error || '订阅转换失败', {
-            status: getSubscriptionErrorStatus(result.error),
-            headers: {
-              'Content-Type': 'text/plain; charset=utf-8'
-            }
-          })
+          return status(getSubscriptionErrorStatus(result.error), result.error || '订阅转换失败')
         }
 
-        return new Response(result.content, {
-          status: 200,
-          headers: {
-            'Content-Type': 'text/plain; charset=utf-8',
-            'X-Content-Type-Options': 'nosniff',
-            'Subscription-Userinfo': `upload=0; download=0; total=0; expire=0`,
-            'Profile-Update-Interval': '24'
-          }
-        })
+        return result.content
       }
 
       const result = await convertSubscription(token, target, config)
 
       if (!result.success) {
-        return new Response(result.error || '订阅转换失败', {
-          status: getSubscriptionErrorStatus(result.error),
-          headers: {
-            'Content-Type': 'text/plain; charset=utf-8'
-          }
-        })
+        return status(getSubscriptionErrorStatus(result.error), result.error || '订阅转换失败')
       }
 
-      return new Response(result.content, {
-        status: 200,
-        headers: {
-          'Content-Type': 'text/plain; charset=utf-8',
-          'X-Content-Type-Options': 'nosniff',
-          'Subscription-Userinfo': `upload=0; download=0; total=0; expire=0`,
-          'Profile-Update-Interval': '24'
-        }
-      })
-    } catch (error: any) {
-      return new Response(error.message, {
-        status: 500,
-        headers: {
-          'Content-Type': 'text/plain; charset=utf-8'
-        }
-      })
+      return result.content
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : '未知错误'
+      return status('Internal Server Error', message)
     }
   })

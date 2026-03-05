@@ -269,8 +269,9 @@ async function handleSubmit() {
     showModal.value = false
     resetForm()
     await subscriptionStore.fetchSubscriptions()
-  } catch (error: any) {
-    alert('操作失败: ' + error.message)
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : '未知错误'
+    alert('操作失败: ' + message)
   } finally {
     submitting.value = false
   }
@@ -281,8 +282,9 @@ async function handleDelete(id: string) {
     try {
       await subscriptionStore.deleteSubscription(id)
       await subscriptionStore.fetchSubscriptions()
-    } catch (error: any) {
-      alert('删除失败: ' + error.message)
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : '未知错误'
+      alert('删除失败: ' + message)
     }
   }
 }

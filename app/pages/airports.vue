@@ -379,7 +379,7 @@ async function loadPluginOptions() {
         }
       }
     }
-  } catch (error) {
+  } catch {
     // 兜底保留通用插件，避免创建流程阻塞
     pluginOptions.value = [{
       id: 'generic',
@@ -464,8 +464,9 @@ async function handleSubmit() {
     showModal.value = false
     resetForm()
     await airportStore.fetchAirports()
-  } catch (error: any) {
-    alert('操作失败: ' + error.message)
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : '未知错误'
+    alert('操作失败: ' + message)
   } finally {
     submitting.value = false
   }
@@ -475,8 +476,9 @@ async function handleUpdate(id: string) {
   try {
     await airportStore.triggerUpdate(id)
     await airportStore.fetchAirports()
-  } catch (error: any) {
-    alert('更新失败: ' + error.message)
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : '未知错误'
+    alert('更新失败: ' + message)
   }
 }
 
@@ -485,8 +487,9 @@ async function handleUpdateAll() {
     try {
       await airportStore.triggerUpdateAll()
       await airportStore.fetchAirports()
-    } catch (error: any) {
-      alert('更新失败: ' + error.message)
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : '未知错误'
+      alert('更新失败: ' + message)
     }
   }
 }
@@ -496,8 +499,9 @@ async function handleDelete(id: string) {
     try {
       await airportStore.deleteAirport(id)
       await airportStore.fetchAirports()
-    } catch (error: any) {
-      alert('删除失败: ' + error.message)
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : '未知错误'
+      alert('删除失败: ' + message)
     }
   }
 }

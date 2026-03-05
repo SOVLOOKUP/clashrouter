@@ -23,8 +23,8 @@ export const useAirportStore = defineStore('airport', {
       try {
         const data = await airportApi.list()
         this.airports = Array.isArray(data) ? data : []
-      } catch (error: any) {
-        this.error = error.message
+      } catch (error: unknown) {
+        this.error = error instanceof Error ? error.message : '未知错误'
         this.airports = []
         throw error
       } finally {
@@ -37,8 +37,8 @@ export const useAirportStore = defineStore('airport', {
       this.error = null
       try {
         this.currentAirport = await airportApi.get(id)
-      } catch (error: any) {
-        this.error = error.message
+      } catch (error: unknown) {
+        this.error = error instanceof Error ? error.message : '未知错误'
         throw error
       } finally {
         this.loading = false
@@ -52,8 +52,8 @@ export const useAirportStore = defineStore('airport', {
         const airport = await airportApi.create(data)
         this.airports.push(airport)
         return airport
-      } catch (error: any) {
-        this.error = error.message
+      } catch (error: unknown) {
+        this.error = error instanceof Error ? error.message : '未知错误'
         throw error
       } finally {
         this.loading = false
@@ -73,8 +73,8 @@ export const useAirportStore = defineStore('airport', {
           this.currentAirport = airport
         }
         return airport
-      } catch (error: any) {
-        this.error = error.message
+      } catch (error: unknown) {
+        this.error = error instanceof Error ? error.message : '未知错误'
         throw error
       } finally {
         this.loading = false
@@ -90,8 +90,8 @@ export const useAirportStore = defineStore('airport', {
         if (this.currentAirport?.id === id) {
           this.currentAirport = null
         }
-      } catch (error: any) {
-        this.error = error.message
+      } catch (error: unknown) {
+        this.error = error instanceof Error ? error.message : '未知错误'
         throw error
       } finally {
         this.loading = false
@@ -105,8 +105,8 @@ export const useAirportStore = defineStore('airport', {
         await airportApi.triggerUpdate(id)
         // 刷新机场信息
         await this.fetchAirport(id)
-      } catch (error: any) {
-        this.error = error.message
+      } catch (error: unknown) {
+        this.error = error instanceof Error ? error.message : '未知错误'
         throw error
       } finally {
         this.loading = false
@@ -118,8 +118,8 @@ export const useAirportStore = defineStore('airport', {
       this.error = null
       try {
         await airportApi.triggerUpdateAll()
-      } catch (error: any) {
-        this.error = error.message
+      } catch (error: unknown) {
+        this.error = error instanceof Error ? error.message : '未知错误'
         throw error
       } finally {
         this.loading = false

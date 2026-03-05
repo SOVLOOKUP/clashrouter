@@ -55,7 +55,7 @@ export async function updateAirportNodes(airportId: string) {
       https: {
         rejectUnauthorized: false
       }
-    } as any).text()
+    } as Parameters<typeof ky>[1]).text()
 
     // 解析节点链接（统一在服务层处理）
     const nodeLinks = extractNodeLinks(content)

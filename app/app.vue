@@ -36,24 +36,46 @@ const currentRoute = useRoute()
     <header class="border-b border-slate-700 bg-slate-900/50 backdrop-blur">
       <div class="container mx-auto px-4 py-4">
         <div class="flex items-center justify-between mb-4">
-          <NuxtLink to="/" class="flex items-center gap-3 hover:opacity-80 transition">
+          <NuxtLink
+            to="/"
+            class="flex items-center gap-3 hover:opacity-80 transition"
+          >
             <div
-              class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
               </svg>
             </div>
             <span class="font-bold text-xl">ClashRouter</span>
           </NuxtLink>
-          <p class="text-xs text-slate-400">Clash 订阅管理系统</p>
+          <p class="text-xs text-slate-400">
+            Clash 订阅管理系统
+          </p>
         </div>
 
         <!-- Navigation -->
         <nav class="flex gap-1 flex-wrap">
-          <NuxtLink v-for="item in menu" :key="item.to" :to="item.to" :class="{
-            'bg-blue-600 hover:bg-blue-700': currentRoute.path === item.to,
-            'text-slate-300 hover:text-white': currentRoute.path !== item.to
-          }" class="px-4 py-2 rounded-lg transition text-sm font-medium">
+          <NuxtLink
+            v-for="item in menu"
+            :key="item.to"
+            :to="item.to"
+            :class="{
+              'bg-blue-600 hover:bg-blue-700': currentRoute.path === item.to,
+              'text-slate-300 hover:text-white': currentRoute.path !== item.to
+            }"
+            class="px-4 py-2 rounded-lg transition text-sm font-medium"
+          >
             {{ item.label }}
           </NuxtLink>
         </nav>
