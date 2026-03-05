@@ -1,84 +1,69 @@
-import { z } from 'zod'
+// API 类型定义
+export interface Airport {
+  id: string
+  name: string
+  pluginType: string
+  username?: string
+  password?: string
+  subUrl?: string
+  updateFrequency: number
+  lastUpdateTime?: string
+  status: string
+  errorMessage?: string
+  nodesJson?: string[]
+  nodeCount?: number
+  createdAt: string
+  updatedAt: string
+}
 
-// Zod Schemas
-export const airportSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  pluginType: z.string(),
-  username: z.string().optional(),
-  password: z.string().optional(),
-  subUrl: z.string().optional(),
-  updateFrequency: z.number(),
-  lastUpdateTime: z.string().optional(),
-  status: z.string(),
-  errorMessage: z.string().optional(),
-  nodesJson: z.array(z.string()).optional(),
-  nodeCount: z.number().optional(),
-  createdAt: z.string(),
-  updatedAt: z.string()
-})
+export interface AirportPlugin {
+  id: string
+  name: string
+  type: 'subUrl' | 'credentials' | 'either'
+  description?: string
+  enabled: boolean
+}
 
-export const airportPluginSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  type: z.enum(['subUrl', 'credentials', 'either']),
-  description: z.string().optional(),
-  enabled: z.boolean()
-})
+export interface Node {
+  id: string
+  name: string
+  type: string
+  server: string
+  port: number
+  password?: string
+  uuid?: string
+  alterId?: number
+  cipher?: string
+  network?: string
+  tls: boolean
+  sni?: string
+  host?: string
+  path?: string
+  latency?: number
+  bandwidth?: number
+  status: string
+  rawConfig: string
+  airportId: string
+  createdAt: string
+  updatedAt: string
+  airport?: {
+    id: string
+    name: string
+  }
+}
 
-export const nodeSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  type: z.string(),
-  server: z.string(),
-  port: z.number(),
-  password: z.string().optional(),
-  uuid: z.string().optional(),
-  alterId: z.number().optional(),
-  cipher: z.string().optional(),
-  network: z.string().optional(),
-  tls: z.boolean(),
-  sni: z.string().optional(),
-  host: z.string().optional(),
-  path: z.string().optional(),
-  latency: z.number().optional(),
-  bandwidth: z.number().optional(),
-  status: z.string(),
-  rawConfig: z.string(),
-  airportId: z.string(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
-  airport: z.object({
-    id: z.string(),
-    name: z.string()
-  }).optional()
-})
+export interface Subscription {
+  id: string
+  name: string
+  token: string
+  description?: string
+  config?: string
+  createdAt: string
+  updatedAt: string
+  airports?: Airport[]
+}
 
-export const subscriptionSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  token: z.string(),
-  description: z.string().optional(),
-  config: z.string().optional(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
-  airports: z.array(airportSchema).optional()
-})
-
-export const apiResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
-  z.object({
-    success: z.boolean(),
-    data: dataSchema.optional(),
-    error: z.string().optional(),
-    message: z.string().optional()
-  })
-
-// TypeScript Types (从 Zod schema 推导)
-export type Airport = z.infer<typeof airportSchema>
-export type AirportPlugin = z.infer<typeof airportPluginSchema>
-export type Node = z.infer<typeof nodeSchema>
-export type Subscription = z.infer<typeof subscriptionSchema>
-export type ApiResponse<T> = {
+export interface ApiResponse<T> {
   success: boolean
   data?: T
   error?: string

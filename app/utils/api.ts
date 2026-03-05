@@ -1,70 +1,17 @@
-import { z } from 'zod'
-import {
-  airportSchema,
-  subscriptionSchema,
-  airportPluginSchema,
-  type Airport,
-  type Subscription,
-  type AirportPlugin
+import type {
+  Airport,
+  Subscription,
+  AirportPlugin
 } from '~/types/api'
 
-interface EdanApi {
-  airports: {
-    get: () => Promise<unknown>
-    post: (data: unknown) => Promise<unknown>
-    (params: { id: string }): {
-      get: () => Promise<unknown>
-      put: (data: unknown) => Promise<unknown>
-      delete: () => Promise<unknown>
-      update: {
-        post: () => Promise<unknown>
-      }
-    }
-    batch: {
-      'update-all': {
-        post: () => Promise<unknown>
-      }
-    }
-  }
-  subscriptions: {
-    get: () => Promise<unknown>
-    post: (data: unknown) => Promise<unknown>
-    (params: { id: string }): {
-      'get': () => Promise<unknown>
-      'put': (data: unknown) => Promise<unknown>
-      'delete': () => Promise<unknown>
-      'regenerate-token': {
-        post: () => Promise<unknown>
-      }
-    }
-  }
-  plugins: {
-    get: () => Promise<unknown>
-    post: (data: unknown) => Promise<unknown>
-    (params: { id: string }): {
-      get: () => Promise<unknown>
-      put: (data: unknown) => Promise<unknown>
-      delete: () => Promise<unknown>
-      toggle: {
-        post: () => Promise<unknown>
-      }
-    }
-  }
-  system: {
-    'trigger-update': {
-      post: () => Promise<unknown>
-    }
-  }
-}
-
-function getApi(): EdanApi {
+function getApi() {
   const { $api } = useNuxtApp()
 
   if (!$api) {
     throw new Error('Eden API 客户端未注入')
   }
 
-  return $api as EdanApi
+  return $api
 }
 
 function normalizeError(error: unknown): string {
@@ -79,7 +26,7 @@ function normalizeError(error: unknown): string {
   return '请求失败'
 }
 
-async function unwrap<T>(request: Promise<unknown>, schema?: z.ZodSchema<T>): Promise<T> {
+async function unwrap<T>(request: Promise<unknown>): Promise<T> {
   let response: unknown
   try {
     response = await request
@@ -107,46 +54,36 @@ async function unwrap<T>(request: Promise<unknown>, schema?: z.ZodSchema<T>): Pr
     response = successResponse.data !== undefined ? successResponse.data : response
   }
 
-  // 如果提供了 schema，进行验证
-  if (schema) {
-    const result = schema.safeParse(response)
-    if (!result.success) {
-      console.error('API 响应验证失败:', result.error)
-      throw new Error('API 响应格式错误')
-    }
-    return result.data
-  }
-
   return response as T
 }
 
 export const airportApi = {
-  list: (): Promise<Airport[]> => unwrap(getApi().airports.get(), z.array(airportSchema)),
-  get: (id: string): Promise<Airport> => unwrap(getApi().airports({ id }).get(), airportSchema),
-  create: (data: Partial<Airport>): Promise<Airport> => unwrap(getApi().airports.post(data), airportSchema),
-  update: (id: string, data: Partial<Airport>): Promise<Airport> => unwrap(getApi().airports({ id }).put(data), airportSchema),
+  list: (): Promise<Airport[]> => unwrap(getApi().airports.get()),
+  get: (id: string): Promise<Airport> => unwrap(getApi().airports({ id }).get()),
+  create: (data: Partial<Airport>): Promise<Airport> => unwrap(getApi().airports.post(data)),
+  update: (id: string, data: Partial<Airport>): Promise<Airport> => unwrap(getApi().airports({ id }).put(data)),
   delete: (id: string): Promise<void> => unwrap(getApi().airports({ id }).delete()),
   triggerUpdate: (id: string): Promise<void> => unwrap(getApi().airports({ id }).update.post()),
   triggerUpdateAll: (): Promise<void> => unwrap(getApi().airports.batch['update-all'].post())
 }
 
 export const subscriptionApi = {
-  list: (): Promise<Subscription[]> => unwrap(getApi().subscriptions.get(), z.array(subscriptionSchema)),
-  get: (id: string): Promise<Subscription> => unwrap(getApi().subscriptions({ id }).get(), subscriptionSchema),
-  create: (data: Partial<Subscription> & { airportIds: string[] }): Promise<Subscription> => unwrap(getApi().subscriptions.post(data), subscriptionSchema),
-  update: (id: string, data: Partial<Subscription> & { airportIds?: string[] }): Promise<Subscription> => unwrap(getApi().subscriptions({ id }).put(data), subscriptionSchema),
+  list: (): Promise<Subscription[]> => unwrap(getApi().subscriptions.get()),
+  get: (id: string): Promise<Subscription> => unwrap(getApi().subscriptions({ id }).get()),
+  create: (data: Partial<Subscription> & { airportIds: string[] }): Promise<Subscription> => unwrap(getApi().subscriptions.post(data)),
+  update: (id: string, data: Partial<Subscription> & { airportIds?: string[] }): Promise<Subscription> => unwrap(getApi().subscriptions({ id }).put(data)),
   delete: (id: string): Promise<void> => unwrap(getApi().subscriptions({ id }).delete()),
-  regenerateToken: (id: string): Promise<Subscription> => unwrap(getApi().subscriptions({ id })['regenerate-token'].post(), subscriptionSchema),
+  regenerateToken: (id: string): Promise<Subscription> => unwrap(getApi().subscriptions({ id })['regenerate-token'].post()),
   getUrl: (token: string, target: string = 'clash'): string => `/_api/sub/${token}?target=${target}`
 }
 
 export const pluginApi = {
-  list: (): Promise<AirportPlugin[]> => unwrap(getApi().plugins.get(), z.array(airportPluginSchema)),
-  get: (id: string): Promise<AirportPlugin> => unwrap(getApi().plugins({ id }).get(), airportPluginSchema),
-  create: (data: Partial<AirportPlugin>): Promise<AirportPlugin> => unwrap(getApi().plugins.post(data), airportPluginSchema),
-  update: (id: string, data: Partial<AirportPlugin>): Promise<AirportPlugin> => unwrap(getApi().plugins({ id }).put(data), airportPluginSchema),
+  list: (): Promise<AirportPlugin[]> => unwrap(getApi().plugins.get()),
+  get: (id: string): Promise<AirportPlugin> => unwrap(getApi().plugins({ id }).get()),
+  create: (data: Partial<AirportPlugin>): Promise<AirportPlugin> => unwrap(getApi().plugins.post(data)),
+  update: (id: string, data: Partial<AirportPlugin>): Promise<AirportPlugin> => unwrap(getApi().plugins({ id }).put(data)),
   delete: (id: string): Promise<void> => unwrap(getApi().plugins({ id }).delete()),
-  toggle: (id: string): Promise<AirportPlugin> => unwrap(getApi().plugins({ id }).toggle.post(), airportPluginSchema)
+  toggle: (id: string): Promise<AirportPlugin> => unwrap(getApi().plugins({ id }).toggle.post())
 }
 
 export const systemApi = {
