@@ -21,7 +21,6 @@ export interface AirportPlugin {
   name: string
   type: 'subUrl' | 'credentials' | 'either'
   description?: string
-  enabled: boolean
 }
 
 export interface Node {

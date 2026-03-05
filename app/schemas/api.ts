@@ -21,8 +21,7 @@ export const airportPluginSchema = z.object({
   id: z.string(),
   name: z.string(),
   type: z.enum(['subUrl', 'credentials', 'either']),
-  description: z.string().optional(),
-  enabled: z.boolean()
+  description: z.string().optional()
 })
 
 export const nodeSchema = z.object({

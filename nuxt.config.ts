@@ -4,7 +4,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/ui',
     '@pinia/nuxt',
-    'nuxt-elysia',
+    'nuxt-elysia'
   ],
 
   devtools: {
@@ -13,15 +13,15 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  runtimeConfig: {
+    subConverterUrl: import.meta.env.SUB_CONVERTER_URL || 'https://api.asailor.org'
+  },
+
   routeRules: {
     '/': { prerender: false }
   },
 
   compatibilityDate: '2025-01-15',
-
-  runtimeConfig: {
-    subConverterUrl: import.meta.env.SUB_CONVERTER_URL || 'https://api.asailor.org'
-  },
 
   eslint: {
     config: {

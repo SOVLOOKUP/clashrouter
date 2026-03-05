@@ -26,8 +26,7 @@ export const pluginRoutes = new Elysia({ prefix: '/plugins' })
         id: plugin.id,
         name: plugin.name,
         description: plugin.description,
-        type: plugin.type,
-        enabled: true
+        type: plugin.type
       }))
 
       return { success: true, data: plugins }
@@ -51,8 +50,7 @@ export const pluginRoutes = new Elysia({ prefix: '/plugins' })
           id: plugin.id,
           name: plugin.name,
           description: plugin.description,
-          type: plugin.type,
-          enabled: true
+          type: plugin.type
         }
       }
     } catch (error: unknown) {

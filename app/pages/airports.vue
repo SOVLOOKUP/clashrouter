@@ -385,8 +385,7 @@ async function loadPluginOptions() {
       id: 'generic',
       name: '通用订阅',
       type: 'subUrl',
-      description: '通用订阅解析插件',
-      enabled: true
+      description: '通用订阅解析插件'
     }]
   }
 }
