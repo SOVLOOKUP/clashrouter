@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client"
+    output   = "../server/generated/prisma"
+}
+
+datasource db {
+    provider = "sqlite"
+}
+
+// 机场信息
+model Airport {
+    id              String         @id @default(cuid())
+    name            String // 机场名称
+    pluginType      String // 使用的插件类型（由代码定义）
+    username        String? // 用户名（某些机场需要）
+    password        String? // 密码（某些机场需要）
+    subUrl          String? // 原始订阅参数 subUrl（可选）
+    updateFrequency Int            @default(60) // 更新频率（分钟）
+    lastUpdateTime  DateTime? // 最后更新时间
+    status          String         @default("active") // 状态：active, inactive, error
+    errorMessage    String? // 错误信息
+    nodesJson       Json           @default("[]") // 节点链接JSON数组（不解析，直接存储）
+    nodeCount       Int            @default(0) // 节点数量
+    createdAt       DateTime       @default(now())
+    updatedAt       DateTime       @updatedAt
+    subscriptions   Subscription[] // 关联的订阅
+}
+
+// 订阅链接
+model Subscription {
+    id          String    @id @default(cuid())
+    name        String // 订阅名称
+    token       String    @unique // 唯一标识符（用于访问链接）
+    description String? // 订阅描述
+    config      String? // 自定义配置（JSON格式）
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+    airports    Airport[] // 关联的机场
+}
