@@ -38,24 +38,26 @@ export async function updateAirportNodes(airportId: string) {
     }
 
     // 获取订阅链接
-    const subscribeUrl = await plugin.getSubscribeUrl({
+    const subscribeContent = await plugin.getSubscribeContent({
       username: airport.username || undefined,
       password: airport.password || undefined,
       subUrl: airport.subUrl || undefined
     })
 
-    if (!subscribeUrl || !subscribeUrl.startsWith('http')) {
-      throw new Error('插件返回的订阅链接无效')
-    }
+    let content: string
 
-    // 获取订阅内容
-    const content = await ky(subscribeUrl, {
-      timeout: 30000, // 30秒超时
-      // Bun 特定选项 - 跳过 SSL 证书验证
-      https: {
-        rejectUnauthorized: false
-      }
-    } as Parameters<typeof ky>[1]).text()
+    if (subscribeContent.startsWith('http')) {
+      // 获取订阅内容
+      content = await ky(subscribeContent, {
+        timeout: 30000, // 30秒超时
+        // Bun 特定选项 - 跳过 SSL 证书验证
+        https: {
+          rejectUnauthorized: false
+        }
+      } as Parameters<typeof ky>[1]).text()
+    } else {
+      content = subscribeContent
+    }
 
     // 解析节点链接（统一在服务层处理）
     const nodeLinks = extractNodeLinks(content)

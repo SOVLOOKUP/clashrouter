@@ -16,7 +16,7 @@ export interface AirportPlugin {
   type: PluginConfigMode
 
   // 获取订阅链接
-  getSubscribeUrl: SubscribeUrlResolver
+  getSubscribeContent: SubscribeUrlResolver
 }
 
 // 插件注册表

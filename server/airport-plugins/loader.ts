@@ -1,14 +1,14 @@
 // 插件初始化 - 注册所有可用插件
 import { registerPlugin } from './index'
-import { genericPlugin } from './generic'
+import { genericPlugin, mojiePlugin } from './airports'
 
 export function initializePlugins() {
-  // 注册通用插件
+  // 通用订阅
   registerPlugin(genericPlugin)
-
-  // 在这里可以注册更多自定义插件
-  // registerPlugin(customPlugin1)
-  // registerPlugin(customPlugin2)
+  // 魔戒机场
+  registerPlugin(mojiePlugin)
+  // 农夫山泉机场
+  // registerPlugin(NFSQPlugin)
 
   console.log('✅ All plugins initialized')
 }
