@@ -1,0 +1,10 @@
+node_modules
+.output
+.nuxt
+.git
+.github
+.vscode
+*.log
+.env
+.env.*
+prisma/data/*.db
