@@ -2,7 +2,7 @@
 
 FROM oven/bun:1.3.10-alpine AS build
 WORKDIR /app
-ENV DATABASE_URL=file:./prisma/data/submanager.db
+ENV DATABASE_URL=file:./prisma/data/clashrouter.db
 
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile --ignore-scripts
@@ -17,7 +17,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3000
-ENV DATABASE_URL=file:./prisma/data/submanager.db
+ENV DATABASE_URL=file:./prisma/data/clashrouter.db
 
 # Keep SQLite directory available when DATABASE_URL points to ./prisma/data/*.db
 RUN mkdir -p /app/prisma/data

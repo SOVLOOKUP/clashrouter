@@ -1,4 +1,4 @@
-# SubManager - 订阅管理系统
+# clashrouter - 订阅管理系统
 
 一个基于 Nuxt 4 和 Elysia 的代理订阅管理系统，支持机场管理、订阅转换和插件扩展。
 
@@ -109,7 +109,7 @@ cp .env.example .env
 SUB_CONVERTER_URL=https://api.v1.mk
 
 # 数据库文件路径
-DATABASE_URL="file:./prisma/data/submanager.db"
+DATABASE_URL="file:./prisma/data/clashrouter.db"
 ```
 
 ### 初始化数据库
@@ -134,7 +134,7 @@ bun run dev
 ## 项目结构
 
 ```
-submanager/
+clashrouter/
 ├── app/                      # Nuxt 应用目录
 │   ├── pages/               # 页面组件
 │   │   ├── index.vue       # 首页
