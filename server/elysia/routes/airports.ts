@@ -20,6 +20,7 @@ const createAirportSchema = z.object({
   username: optionalTextSchema,
   password: optionalTextSchema,
   subUrl: optionalTextSchema,
+  host: optionalTextSchema,
   updateFrequency: z.number().int().min(1, '更新频率必须大于 0').optional()
 })
 
@@ -29,6 +30,7 @@ const updateAirportSchema = z.object({
   username: optionalTextSchema,
   password: optionalTextSchema,
   subUrl: optionalTextSchema,
+  host: optionalTextSchema,
   updateFrequency: z.number().int().min(1, '更新频率必须大于 0').optional(),
   status: z.string().trim().min(1, '状态不能为空').optional()
 })
@@ -93,6 +95,10 @@ function getCredentialValidationMessage(mode: PluginConfigMode) {
   return 'subUrl 与用户名/密码需二选一：要么填写 subUrl，要么同时填写用户名和密码'
 }
 
+function isHttpsHost(value?: string) {
+  return !value || value.startsWith('http')
+}
+
 export const airportRoutes = new Elysia({ prefix: '/airports' })
 // 获取所有机场列表
   .get('/', async () => {
@@ -133,7 +139,8 @@ export const airportRoutes = new Elysia({ prefix: '/airports' })
       const username = normalizeOptionalText(parsedBody.username)
       const password = normalizeOptionalText(parsedBody.password)
       const subUrl = normalizeOptionalText(parsedBody.subUrl)
-      console.log('📊 Normalized fields:', { name, pluginType, username, password, subUrl })
+      const host = normalizeOptionalText(parsedBody.host)
+      console.log('📊 Normalized fields:', { name, pluginType, username, password, subUrl, host })
 
       const plugin = pluginType ? getPlugin(pluginType) : undefined
       if (!pluginType || !plugin) {
@@ -148,6 +155,10 @@ export const airportRoutes = new Elysia({ prefix: '/airports' })
         return { success: false, error: getCredentialValidationMessage(plugin.type) }
       }
 
+      if (pluginType === 'xboard' && !isHttpsHost(host)) {
+        return { success: false, error: 'Xboard host 必须以 https:// 开头' }
+      }
+
       // 创建机场
       const airport = await prisma.airport.create({
         data: {
@@ -156,6 +167,7 @@ export const airportRoutes = new Elysia({ prefix: '/airports' })
           username: isBlank(username) ? null : username,
           password: isBlank(password) ? null : password,
           subUrl: isBlank(subUrl) ? null : subUrl,
+          host: isBlank(host) ? null : host,
           updateFrequency: parsedBody.updateFrequency || 60
         }
       })
@@ -192,6 +204,7 @@ export const airportRoutes = new Elysia({ prefix: '/airports' })
       const username = normalizeOptionalText(parsedBody.username)
       const password = normalizeOptionalText(parsedBody.password)
       const subUrl = normalizeOptionalText(parsedBody.subUrl)
+      const host = normalizeOptionalText(parsedBody.host)
 
       // 更新时用最终值做校验，避免部分字段更新造成误判
       const finalSubUrl = subUrl ?? (currentAirport.subUrl ?? undefined)
@@ -206,6 +219,11 @@ export const airportRoutes = new Elysia({ prefix: '/airports' })
         return { success: false, error: getCredentialValidationMessage(plugin.type) }
       }
 
+      const finalHost = host ?? (currentAirport.host ?? undefined)
+      if (finalPluginType === 'xboard' && !isHttpsHost(finalHost)) {
+        return { success: false, error: 'Xboard host 必须以 https:// 开头' }
+      }
+
       const airport = await prisma.airport.update({
         where: { id },
         data: {
@@ -214,6 +232,7 @@ export const airportRoutes = new Elysia({ prefix: '/airports' })
           username: isBlank(username) ? null : username,
           password: isBlank(password) ? null : password,
           subUrl: isBlank(subUrl) ? null : subUrl,
+          host: isBlank(host) ? null : host,
           updateFrequency: parsedBody.updateFrequency,
           status: parsedBody.status
         }

@@ -6,6 +6,7 @@ export interface Airport {
   username?: string
   password?: string
   subUrl?: string
+  host?: string
   updateFrequency: number
   lastUpdateTime?: string
   status: string

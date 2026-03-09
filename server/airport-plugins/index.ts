@@ -3,6 +3,7 @@ export interface SubscribeUrlParams {
   username?: string
   password?: string
   subUrl?: string
+  host?: string
 }
 
 export type PluginConfigMode = 'subUrl' | 'credentials' | 'either'

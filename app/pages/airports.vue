@@ -289,6 +289,19 @@
             >
           </div>
 
+          <div v-if="form.pluginType === 'xboard'">
+            <label class="block text-sm font-medium text-slate-300 mb-2">BaseURL</label>
+            <input
+              v-model="form.host"
+              type="text"
+              placeholder="例如: https://mojie.example.com"
+              class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+            >
+            <p class="text-xs text-slate-400 mt-1">
+              仅 Xboard 插件需要，留空将使用魔戒地址。
+            </p>
+          </div>
+
           <div>
             <label class="block text-sm font-medium text-slate-300 mb-2">更新频率（分钟） *</label>
             <input
@@ -338,6 +351,7 @@ const form = ref({
   subUrl: '',
   username: '',
   password: '',
+  host: '',
   updateFrequency: 60,
   pluginType: 'generic'
 })
@@ -351,10 +365,15 @@ watch(currentPluginMode, (mode) => {
   if (mode === 'subUrl') {
     form.value.username = ''
     form.value.password = ''
+    form.value.host = ''
   }
 
   if (mode === 'credentials') {
     form.value.subUrl = ''
+  }
+
+  if (form.value.pluginType !== 'xboard') {
+    form.value.host = ''
   }
 })
 
@@ -405,6 +424,7 @@ function resetForm() {
     subUrl: '',
     username: '',
     password: '',
+    host: '',
     updateFrequency: 60,
     pluginType: pluginOptions.value[0]?.id || 'generic'
   }
@@ -417,6 +437,7 @@ function handleEdit(airport: Airport) {
     subUrl: airport.subUrl || '',
     username: airport.username || '',
     password: airport.password || '',
+    host: airport.host || '',
     updateFrequency: airport.updateFrequency,
     pluginType: airport.pluginType
   }
@@ -450,6 +471,11 @@ async function handleSubmit() {
 
   if (currentPluginMode.value === 'either' && !hasSubUrl && !(hasUsername && hasPassword)) {
     alert('subUrl 与用户名/密码需二选一：要么填写 subUrl，要么同时填写用户名和密码')
+    return
+  }
+
+  if (form.value.pluginType === 'xboard' && form.value.host.trim() !== '' && !form.value.host.trim().startsWith('https://')) {
+    alert('Xboard host 必须以 https:// 开头')
     return
   }
 

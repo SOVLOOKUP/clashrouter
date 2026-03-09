@@ -41,7 +41,8 @@ export async function updateAirportNodes(airportId: string) {
     const subscribeContent = await plugin.getSubscribeContent({
       username: airport.username || undefined,
       password: airport.password || undefined,
-      subUrl: airport.subUrl || undefined
+      subUrl: airport.subUrl || undefined,
+      host: airport.host || undefined
     })
 
     let content: string

@@ -7,6 +7,7 @@ export const airportSchema = z.object({
   username: z.string().optional(),
   password: z.string().optional(),
   subUrl: z.string().optional(),
+  host: z.string().optional(),
   updateFrequency: z.number(),
   lastUpdateTime: z.string().optional(),
   status: z.string(),

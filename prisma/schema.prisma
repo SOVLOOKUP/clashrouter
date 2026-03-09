@@ -18,6 +18,7 @@ model Airport {
     username        String? // 用户名（某些机场需要）
     password        String? // 密码（某些机场需要）
     subUrl          String? // 原始订阅参数 subUrl（可选）
+    host            String? // Xboard 机场地址（需包含 https://，可选）
     updateFrequency Int            @default(60) // 更新频率（分钟）
     lastUpdateTime  DateTime? // 最后更新时间
     status          String         @default("active") // 状态：active, inactive, error
