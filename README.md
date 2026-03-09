@@ -2,6 +2,12 @@
 
 一个基于 Nuxt 4 和 Elysia 的代理订阅管理系统，支持机场管理、订阅转换和插件扩展。
 
+<img width="1977" height="1394" alt="图片" src="https://github.com/user-attachments/assets/b8a0900b-2f42-4dc3-a576-7293a017ab89" />
+
+<img width="1921" height="1141" alt="图片" src="https://github.com/user-attachments/assets/4c11f478-5ef8-4b99-a864-32c7b5a23d10" />
+
+<img width="1870" height="1319" alt="图片" src="https://github.com/user-attachments/assets/0e0cc0e3-0abf-405a-9f93-f2186dd05af0" />
+
 ## 功能特性
 
 ### 1. 机场管理
