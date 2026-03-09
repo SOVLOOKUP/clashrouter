@@ -23,6 +23,8 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2025-01-15',
 
+  nitro: { preset: 'bun' },
+
   eslint: {
     config: {
       stylistic: {
