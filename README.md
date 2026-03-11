@@ -93,7 +93,25 @@ SubscriptionAirport (关联表)
 ### Docker 一行运行
 
 ```bash
-docker run -d --name clashrouter -p 3000:3000 -v ./data:/app/prisma/data ghcr.nju.edu.cn/sovlookup/clashrouter:latest
+docker run -d --name clashrouter -p 3000:3000 -e SUB_CALLBACK_URL=https://your_domain.com -e SUB_CONVERTER_URL=https://api.asailor.org -v ./data:/app/prisma/data ghcr.nju.edu.cn/sovlookup/clashrouter:latest
+```
+
+进阶配置：
+
+```yaml
+version: "3.8"
+
+services:
+  clashrouter:
+    container_name: clashrouter
+    image: ghcr.nju.edu.cn/sovlookup/clashrouter:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/prisma/data
+    environment:
+      - SUB_CALLBACK_URL=https://your_domain.com
+      - SUB_CONVERTER_URL=https://api.asailor.org
 ```
 
 ### 环境要求
