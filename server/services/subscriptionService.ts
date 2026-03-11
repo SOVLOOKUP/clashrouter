@@ -36,6 +36,26 @@ function encodeNodesToBase64(nodes: string[]): string {
   return Buffer.from(nodeLinks).toString('base64')
 }
 
+function normalizeBaseUrl(raw: string): string {
+  return raw.trim().replace(/\/+$/, '')
+}
+
+function getCallbackBaseUrl(): string {
+  // For external SubConverter services, this must be a publicly reachable URL.
+  const envBaseUrl
+    = process.env.SUB_CALLBACK_URL
+      || process.env.PUBLIC_BASE_URL
+      || process.env.APP_URL
+      || process.env.SITE_URL
+
+  if (envBaseUrl && envBaseUrl.trim()) {
+    return normalizeBaseUrl(envBaseUrl)
+  }
+
+  const port = process.env.PORT || '3000'
+  return `http://127.0.0.1:${port}`
+}
+
 function toNodeLinks(value: unknown): string[] {
   if (Array.isArray(value)) {
     return value.filter((item): item is string => typeof item === 'string')
@@ -162,14 +182,20 @@ export async function convertSubscription(
       }
     }
 
-    // 为每个机场的每个节点添加 provider 前缀
+    // 仅用于统计节点数量和失败兜底（base64 返回）
     const allNodes = airportsResult.airports.flatMap(airport => airport.nodes)
-    const allNodesWithProvider: string[] = []
+
+    // 将每个机场转换为可回调的订阅链接，避免 URL 因节点过多而超长
+    const callbackBaseUrl = getCallbackBaseUrl()
+    const allSubscriptionUrlsWithProvider: string[] = []
     for (const airport of airportsResult.airports) {
       const providerName = normalizeProviderName(airport.airportName)
-      for (const node of airport.nodes) {
-        allNodesWithProvider.push(`provider:${providerName},${node}`)
-      }
+      const callbackQuery = new URLSearchParams({
+        target: 'base64',
+        airportId: airport.airportId
+      })
+      const callbackUrl = `${callbackBaseUrl}/sub/${token}?${callbackQuery.toString()}`
+      allSubscriptionUrlsWithProvider.push(`provider:${providerName},${callbackUrl}`)
     }
 
     if (allNodes.length === 0) {
@@ -182,11 +208,10 @@ export async function convertSubscription(
     const subConverterUrl = process.env.SUB_CONVERTER_URL || 'https://api.asailor.org'
 
     try {
-      // 直接将带 provider 前缀的节点链接用 | 分隔，不要手动编码
-      // URLSearchParams 会自动处理编码
+      // 使用回调订阅链接让 SubConverter 拉取内容，避免超长 URL。
       const query = new URLSearchParams({
         target,
-        url: allNodesWithProvider.join('|')
+        url: allSubscriptionUrlsWithProvider.join('|')
       })
 
       if (config) {
