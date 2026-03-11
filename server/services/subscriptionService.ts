@@ -194,7 +194,7 @@ export async function convertSubscription(
         target: 'base64',
         airportId: airport.airportId
       })
-      const callbackUrl = `${callbackBaseUrl}/sub/${token}?${callbackQuery.toString()}`
+      const callbackUrl = `${callbackBaseUrl}/_api/sub/${token}?${callbackQuery.toString()}`
       allSubscriptionUrlsWithProvider.push(`provider:${providerName},${callbackUrl}`)
     }
 
