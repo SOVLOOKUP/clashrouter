@@ -206,10 +206,12 @@ export async function convertSubscription(
     }
 
     const subConverterUrl = process.env.SUB_CONVERTER_URL || 'https://api.asailor.org'
+    const configUrl = process.env.SUB_CONVERTER_CONFIG_URL || 'https://testingcf.jsdelivr.net/gh/Aethersailor/Custom_OpenClash_Rules@refs/heads/main/cfg/Custom_Clash_Full.ini'
 
     try {
       // 使用回调订阅链接让 SubConverter 拉取内容，避免超长 URL。
       const query = new URLSearchParams({
+        config: configUrl,
         target,
         url: allSubscriptionUrlsWithProvider.join('|')
       })
