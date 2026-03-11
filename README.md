@@ -90,6 +90,12 @@ SubscriptionAirport (关联表)
 
 ## 快速开始
 
+### Docker 一行运行
+
+```bash
+docker run -d --name clashrouter -p 3000:3000 -v ./data:/app/prisma/data ghcr.nju.edu.cn/sovlookup/clashrouter:latest
+```
+
 ### 环境要求
 
 - Bun >= 1.0.0
