@@ -1,6 +1,6 @@
-# syntax=docker/dockerfile:1.7
+# syntax=docker/dockerfile:1.23
 
-FROM oven/bun:1.3.10-alpine AS build
+FROM oven/bun:1.3.12-alpine AS build
 WORKDIR /app
 ENV DATABASE_URL=file:./prisma/data/clashrouter.db
 
@@ -18,7 +18,7 @@ RUN mkdir -p /app/prisma/data \
 FROM build AS migrator
 CMD ["bunx", "--bun", "prisma", "migrate", "deploy"]
 
-FROM oven/bun:1.3.10-alpine AS runtime
+FROM oven/bun:1.3.12-alpine AS runtime
 WORKDIR /app
 
 ENV NODE_ENV=production
