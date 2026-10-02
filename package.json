@@ -28,7 +28,7 @@
     "nanoid": "^5.1.6",
     "nuxt": "^4.3.1",
     "nuxt-elysia": "^0.2.0",
-    "pinia": "^3.0.4",
+    "pinia": "^4.0.3",
     "prisma-adapter-bun-sqlite": "^0.6.8",
     "tailwindcss": "^4.2.1",
     "yaml": "^2.8.2",
